@@ -55,7 +55,8 @@ src/
    # gateways or self-hosted, OpenAI-compatible services).
    # OPENAI_BASE_URL=https://your-proxy.example.com/v1
    # ANTHROPIC_BASE_URL=https://your-proxy.example.com/anthropic
-   # GOOGLE_GENERATIVE_AI_BASE_URL=https://your-proxy.example.com/google
+   # GOOGLE_GENERATIVE_AI_BASE_URL=https://your-proxy.example.com/google/v1beta
+   # (used by both the `vercel` and `gemini` backends; include the API version)
    ```
 
 3. **Build the Package**

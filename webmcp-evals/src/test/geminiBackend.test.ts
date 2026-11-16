@@ -25,6 +25,32 @@ describe("GeminiBackend", () => {
     assert.strictEqual(backend.describe(), "Gemini Backend using model: gemini-3.5-flash");
   });
 
+  it("should send requests to a custom base URL when one is provided", async () => {
+    const backend = new GeminiBackend(
+      "dummy-api-key",
+      "gemini-3.5-flash",
+      "System prompt",
+      "https://proxy.example.com/gemini/v1beta",
+    );
+    const originalFetch = globalThis.fetch;
+    let requestUrl = "";
+    globalThis.fetch = async (input: string | URL | Request) => {
+      requestUrl = input instanceof Request ? input.url : input.toString();
+      return new Response(JSON.stringify({ candidates: [] }), {
+        headers: { "Content-Type": "application/json" },
+      });
+    };
+    try {
+      await backend.execute([{ type: "message", role: "user", content: "Hi" }], sampleTools);
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+    assert.strictEqual(
+      requestUrl,
+      "https://proxy.example.com/gemini/v1beta/models/gemini-3.5-flash:generateContent",
+    );
+  });
+
   it("should throw not implemented for executeInBrowserEval", () => {
     const backend = new GeminiBackend("dummy-api-key", "gemini-3.5-flash", "System prompt");
     assert.rejects(

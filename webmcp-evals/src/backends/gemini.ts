@@ -16,8 +16,12 @@ export class GeminiBackend implements Backend {
     apiKey: string,
     private model: string,
     private systemPrompt: string,
+    baseURL?: string,
   ) {
-    this.googleGenAI = new GoogleGenAI({ apiKey });
+    // Match @ai-sdk/google: baseURL is the full prefix, including the API
+    // version (e.g. https://proxy.example.com/v1beta).
+    const httpOptions = baseURL ? { baseUrl: baseURL, apiVersion: "" } : undefined;
+    this.googleGenAI = new GoogleGenAI({ apiKey, httpOptions });
   }
 
   async executeLocalEvals(test: Eval, registry: ToolRegistry): Promise<LocalEvalResult> {

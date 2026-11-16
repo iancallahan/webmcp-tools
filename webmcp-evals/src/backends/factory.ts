@@ -17,7 +17,12 @@ export function createBackend(config: Config | WebmcpConfig): Backend {
       process.env.GEMINI_API_KEY ||
       process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (!apiKey) throw new Error("Missing Google API key");
-    return new GeminiBackend(apiKey, config.model || "gemini-3-flash-preview", SYSTEM_PROMPT);
+    return new GeminiBackend(
+      apiKey,
+      config.model || "gemini-3-flash-preview",
+      SYSTEM_PROMPT,
+      process.env.GOOGLE_GENERATIVE_AI_BASE_URL,
+    );
   }
 
   if (config.backend === "ollama") {
